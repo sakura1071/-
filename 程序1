@@ -1,0 +1,168 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string>
+#include<iostream>
+#include<windows.h>
+using namespace std;
+/*BOOL SetConsoleColor(WORD wAttributes)  
+{  
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);  
+    if (hConsole == INVALID_HANDLE_VALUE)  
+        return FALSE;  
+  
+    return SetConsoleTextAttribute(hConsole, wAttributes);  
+}  */
+struct qnode
+{
+	qnode*next;
+	string data;
+};
+struct linkqueue
+{
+	qnode *front;
+	qnode *rear;
+};
+void initqueue(linkqueue &Q)
+{
+	qnode *q;
+	q=new qnode;
+	q->next=NULL;
+	Q.front=q;
+	Q.rear=q;
+}
+int isempty(linkqueue &Q)
+{
+	if(Q.rear==Q.front)
+		return 0;
+	else
+		return 1;
+}
+void enqueue(linkqueue &Q,string e)
+{
+	qnode *q;
+	q=new qnode;
+	q->next=NULL;
+	q->data=e;
+	Q.rear->next=q;
+	Q.rear=q;
+}
+string dequeue(linkqueue &Q,string &e)
+{
+	qnode *p;
+	p=Q.front->next;
+	e=p->data;
+	Q.front->next=p->next;
+	if(Q.rear==p)
+		Q.rear=Q.front;
+	delete p;
+	return e;
+}
+int main()
+{
+	system("color 70");
+	/*SetConsoleColor(0x0000 | 0x0040 | 0x0010 | 0x0020);*/
+	linkqueue *levfir;
+	linkqueue *levsec;
+	linkqueue *levthi;
+	linkqueue *levfou;
+	levfir=new linkqueue;
+	levsec=new linkqueue;
+	levthi=new linkqueue;
+	levfou=new linkqueue;
+	initqueue(*levfir);
+	initqueue(*levsec);
+	initqueue(*levthi);
+	initqueue(*levfou);
+	point1:
+	cout<<"请输入患者的姓名和病情优先级（1/2）以及患者年龄，优先级为0代表输入结束"<<endl;
+	int i,j,k,m;
+	int num,dat,age;
+	string name,out;
+	for(i=0;;i++)
+	{
+		cin>>name>>num>>age;
+		if(num==1&&age>=70)
+		{
+			enqueue(*levfir,name);
+			cout<<"该患者已经录入优先级为1的患者队列中"<<endl;
+		    cout<<"请继续录入患者数据"<<endl;
+		}
+		else if(num==1&&age<70)
+		{
+			enqueue(*levsec,name);
+			cout<<"该患者已经录入优先级为2的患者队列中"<<endl;
+		    cout<<"请继续录入患者数据"<<endl;
+		}
+		else if(num==2&&age>=70)
+		{
+			enqueue(*levthi,name);
+		cout<<"该患者已经录入优先级为3的患者队列中"<<endl;
+		    cout<<"请继续录入患者数据"<<endl;
+		}
+		else if(num==2&&age<70)
+		{
+			enqueue(*levfou,name);
+			cout<<"该患者已经录入优先级为4的患者队列中"<<endl;
+		    cout<<"请继续录入患者数据"<<endl;
+		}
+		else if(num==0)
+		{
+			cout<<"录入结束！"<<endl;
+		    break;
+		}
+		else
+		{
+			cout<<"没有该优先级，请重试!"<<endl;
+		}
+	}
+	cout<<"请输入3来查看下一位病人,输入4来继续录入患者数据"<<endl;
+	for(j=0;;j++)
+	{
+		for(k=0;;k++)
+		{
+			cin>>m;
+			if(m==3)
+				break;
+			else if(m==4)
+				goto point1;
+			else
+				cout<<"您输入的数据有误，请重试"<<endl;
+		}
+		if(isempty(*levfir))
+		{
+			cout<<"下一位病人是："<<dequeue(*levfir,out)<<endl;
+			cout<<"请输入3来查看下一位病人,输入4来继续录入患者数据"<<endl;
+		}
+		else if(isempty(*levsec))
+		{
+			cout<<"下一位病人是："<<dequeue(*levsec,out)<<endl;
+			cout<<"请输入3来查看下一位病人,输入4来继续录入患者数据"<<endl;
+		}
+		else if(isempty(*levthi))
+		{
+			cout<<"下一位病人是："<<dequeue(*levthi,out)<<endl;
+			cout<<"请输入3来查看下一位病人,输入4来继续录入患者数据"<<endl;
+		}
+		else if(isempty(*levfou))
+		{
+			cout<<"下一位病人是："<<dequeue(*levfou,out)<<endl;
+			cout<<"请输入3来查看下一位病人,输入4来继续录入患者数据"<<endl;
+		}
+		else
+		{
+			cout<<"所有候诊患者已经全部诊疗完毕，辛苦了！若要继续输入患者数据请输入4，输入其他数据则结束程序"<<endl;
+			cin>>dat;
+			if(dat==4)
+				goto point1;
+			else
+				break;
+		}
+	}
+	cout<<"程序运行结束！";
+	delete levfir->front;
+	delete levsec->front;
+	delete levfir;
+	delete levsec;
+	system("pause");
+	return 0;
+}
